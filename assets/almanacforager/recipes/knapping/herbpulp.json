@@ -1,0 +1,14 @@
+{
+  "ingredient": { "type": "item", "code": "game:stone-*", "name": "rock", "allowedVariants": ["chert", "granite", "andesite", "basalt", "obsidian", "flint", "peridotite"] },
+  "pattern": [[
+    "____#_____",
+    "___###____",
+    "__#####___",
+    "___###____",
+    "____#_____",
+    "__________"
+  ]],
+  "name": "Herb pulp (almanac test)",
+  "output": { "type": "item", "code": "game:stone-{rock}", "stacksize": 1 },
+  "attributes": { "almanac": { "requiresHardSurface": true } }
+}

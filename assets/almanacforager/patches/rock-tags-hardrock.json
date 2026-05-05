@@ -1,0 +1,22 @@
+[
+  {
+    "op": "addmerge",
+    "file": "game:blocktypes/stone/rock",
+    "path": "/tagsByType",
+    "value": {
+      "rock-andesite":     ["almanac-hardrock"],
+      "rock-basalt":       ["almanac-hardrock"],
+      "rock-bauxite":      ["almanac-hardrock"],
+      "rock-chert":        ["almanac-hardrock"],
+      "rock-claystone":    ["almanac-hardrock"],
+      "rock-conglomerate": ["almanac-hardrock"],
+      "rock-granite":      ["almanac-hardrock"],
+      "rock-limestone":    ["almanac-hardrock"],
+      "rock-peridotite":   ["almanac-hardrock"],
+      "rock-phyllite":     ["almanac-hardrock"],
+      "rock-sandstone":    ["almanac-hardrock"],
+      "rock-shale":        ["almanac-hardrock"],
+      "rock-slate":        ["almanac-hardrock"]
+    }
+  }
+]
