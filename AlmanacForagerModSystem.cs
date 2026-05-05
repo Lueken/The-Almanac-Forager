@@ -1,4 +1,5 @@
 using AlmanacForager.Diagnostics;
+using AlmanacForager.Integration;
 using AlmanacForager.Networking;
 using AlmanacForager.SurfaceGate;
 using Vintagestory.API.Client;
@@ -8,7 +9,7 @@ using Vintagestory.API.Server;
 [assembly: ModInfo("The Almanac: Forager", "almanacforager",
     Authors = new string[] { "Lueken Good Design" },
     Description = "Substrate-gated knapping shim, trait-tag system over vanilla flora, preparation/preservation blocks.",
-    Version = "0.1.0")]
+    Version = "0.2.0")]
 
 namespace AlmanacForager;
 
@@ -70,5 +71,7 @@ public class AlmanacForagerModSystem : ModSystem
             AlmanacLogger.Info(api, "mod-system",
                 "MatchesRecipe handler subscribed in AssetsFinalize (after vanilla, so our veto wins)");
         }
+
+        CodexIntegration.RegisterEntriesAndProcesses(api);
     }
 }

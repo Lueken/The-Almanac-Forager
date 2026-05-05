@@ -20,6 +20,10 @@
       <HintPath>$(VINTAGE_STORY)/Lib/protobuf-net.dll</HintPath>
       <Private>false</Private>
     </Reference>
+    <Reference Include="AlmanacCodex">
+      <HintPath>..\the-almanac-codex\bin\$(Configuration)\Mods\AlmanacCodex.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
   </ItemGroup>
 
 </Project>
