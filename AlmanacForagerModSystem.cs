@@ -1,3 +1,4 @@
+using AlmanacForager.Diagnostics;
 using AlmanacForager.Networking;
 using AlmanacForager.SurfaceGate;
 using Vintagestory.API.Client;
@@ -52,6 +53,8 @@ public class AlmanacForagerModSystem : ModSystem
                     $"received gate index from server ({packet.RecipeNames.Length} gated recipes)");
                 HardSurfaceRecipeIndex.Populate(api, packet.RecipeNames);
             });
+
+        TagInspectCommand.Register(api);
     }
 
     public override void AssetsFinalize(ICoreAPI api)
