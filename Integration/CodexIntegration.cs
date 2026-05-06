@@ -23,7 +23,13 @@ public static class CodexIntegration
         CodexAPI.RegisterProcess(api, new ProcessDefinition(
             code: ProcessKnap,
             displayKey: "almanacforager:process-knap",
-            ownerModId: ModId));
+            ownerModId: ModId)
+        {
+            HintKey = "almanacforager:codex-process-hint.knap",
+            FlavorKey = "almanacforager:codex-process-flavor.knap",
+        });
+
+        var defs = CodexEntryLoader.Load(api);
 
         var registry = api.CollectibleTagRegistry;
         var err = registry.TryCreateTagSetAndLogIssues(out var almanacTags, AlmanacTagCodes);
@@ -31,16 +37,37 @@ public static class CodexIntegration
             $"built lookup TagSet for {AlmanacTagCodes.Length} known almanac-* tags (result={err})");
 
         int registered = 0;
+        int withMeta = 0;
         foreach (var collectible in api.World.Collectibles)
         {
             if (collectible?.Code == null) continue;
             if (collectible.Tags.IsEmpty) continue;
             if (!collectible.Tags.Overlaps(almanacTags)) continue;
-            CodexAPI.RegisterEntry(api, new AlmanacEntry(collectible.Code, ModId));
+
+            var meta = CodexEntryLoader.Lookup(defs, collectible.Code.Path);
+            if (meta != null) withMeta++;
+
+            string? classKey = meta != null && !string.IsNullOrEmpty(meta.Class)
+                ? $"almanacforager:codex-class.{meta.Class}"
+                : null;
+            string? habitatKey = meta != null && !string.IsNullOrEmpty(meta.Slug)
+                ? $"almanacforager:codex-habitat.{meta.Slug}"
+                : null;
+            string? descKey = meta != null && !string.IsNullOrEmpty(meta.Slug)
+                ? $"almanacforager:codex-description.{meta.Slug}"
+                : null;
+
+            CodexAPI.RegisterEntry(api, new AlmanacEntry(collectible.Code, ModId)
+            {
+                LatinName = !string.IsNullOrEmpty(meta?.Latin) ? meta.Latin : null,
+                ClassificationKey = classKey,
+                HabitatKey = habitatKey,
+                DescriptionKey = descKey,
+            });
             registered++;
         }
 
         AlmanacLogger.Info(api, "codex-integration",
-            $"registered {registered} collectibles with The Almanac: Codex");
+            $"registered {registered} collectibles with The Almanac: Codex ({withMeta} with metadata)");
     }
 }
