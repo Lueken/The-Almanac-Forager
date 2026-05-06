@@ -1,21 +1,51 @@
 # The Almanac: Forager
 
-The first sub-mod in [**The Almanac**](https://github.com/Lueken/The-Almanac-VS) — period-faithful vanilla enhancements for [Vintage Story](https://www.vintagestory.at/).
+The first content mod in [**The Almanac**](https://github.com/Lueken/The-Almanac-VS) — period-faithful vanilla enhancements for [Vintage Story](https://www.vintagestory.at/).
 
-Forager ships the **substrate-gated knapping shim**, the **trait-tag system over vanilla flora**, and **6 preparation/preservation blocks**. It is the foundation that future Almanac mods (Apothecary, Alchemist, ...) extend.
+Forager ships a **substrate-gated knapping shim**, a **trait-tag system over vanilla flora**, and (from v0.2.0) **richer codex metadata for ~135 vanilla flora species** that surfaces through [The Almanac: Codex](https://github.com/Lueken/The-Almanac-Codex).
 
-> **Status:** v0.1.0 in development. Day 1 smoke test passing — substrate gate working end-to-end. Tag-patching of vanilla flora and preparation blocks are next.
+> **Status:** v0.2.1 in development. Substrate gate, tag system, and Codex metadata pass are all live.
 
-## What it does today (v0.1.0 in progress)
+---
 
-- **Substrate-gated knapping** — recipes can declare `attributes.almanac.requiresHardSurface = true`, and Forager hides them in the Knapping UI unless the surface sits on a hard rock substrate (any of 13 vanilla rock types: andesite, basalt, bauxite, chert, claystone, conglomerate, granite, limestone, peridotite, phyllite, sandstone, shale, slate). Chalk excluded — too soft.
-- **`almanac-hardrock` tag** — applied to all 13 hard rock blocks via JSON patch. Forward-compatible with any rock-mod that adopts the tag.
-- **Network-channel index** — because `LayeredVoxelRecipe` drops `Attributes` during server-to-client sync, Forager broadcasts the gated-recipe-name list to each client on join over a `almanacforager.gates` ProtoBuf channel. Apothecary and Alchemist will inherit this shim — they just author recipes; gating is automatic.
+## What Forager does
+
+### Substrate-gated knapping
+Knapping recipes can declare `attributes.almanac.requiresHardSurface = true`, and Forager hides them in the Knapping UI unless the player is sitting on a hard rock substrate. Hard rock = any of the 13 vanilla rock types: andesite, basalt, bauxite, chert, claystone, conglomerate, granite, limestone, peridotite, phyllite, sandstone, shale, slate. Chalk excluded — too soft.
+
+The `almanac-hardrock` tag is applied to all 13 via JSON patch, forward-compatible with any rock-mod that adopts the tag.
+
+A `almanacforager.gates` ProtoBuf network channel broadcasts the gated-recipe-name list to each client on join, because `LayeredVoxelRecipe` drops `Attributes` during server-to-client sync. Apothecary and Alchemist inherit this shim transparently — author recipes, gating is automatic.
+
+### Trait-tag system
+JSON patches apply `almanac-*` trait tags to vanilla flora codes via `tagsByType` selectors. Tags currently in use:
+
+`almanac-aromatic`, `almanac-medicinal`, `almanac-decorative`, `almanac-toxic`, `almanac-culinary`, `almanac-psychoactive`, `almanac-fibrous`, `almanac-fruity`, `almanac-sweet`, `almanac-acidic`, `almanac-starchy`, `almanac-leafy`, `almanac-seedy`
+
+The patches cover herbs, mushrooms (~47 species), flowers, fruiting bushes, fruits, vegetables, grains, legumes, spices, aquatics, reeds, and bamboo. Wildcard selectors (`mushroom-reishi-*`, `fruitingbush-*-blackberry-*`) ensure all orientation/state variants of the same species pick up the same tags.
+
+### Codex metadata (v0.2.0+)
+Forager registers every tagged collectible with The Almanac: Codex and supplies metadata for each:
+
+- **Latin binomial** for the actual species the VS asset represents
+- **Classification slug** that the Codex resolves to a label (Bracket fungus, Bramble, Tropical fruit, ...)
+- **Habitat** — brief observational phrase ("Old-growth forest; dead hardwood")
+- **Description** — 1–2 sentences in the Almanac's period-faithful voice
+
+Metadata is data-driven, in `assets/almanacforager/config/codex-entries.json`, and resolves through a three-tier lookup (exact match → progressive prefix shortening → wildcard pattern matching) so every variant of every species shares one metadata record.
+
+The `knap` process is registered with Codex with flavor + hint text (`"stone on stone"`, `"on a hard rock surface"`).
+
+---
 
 ## Requirements
 
-- Vintage Story 1.22.0 or later
-- No required mods. **Recommended companion:** [Biodiversity](https://mods.vintagestory.at/biodiversity) — Forager applies trait tags to its plants if loaded.
+- **Vintage Story 1.22.0+**
+- **[The Almanac: Codex](https://github.com/Lueken/The-Almanac-Codex)** — hard dependency from v0.2.0 onward. The codex metadata pass is delivered through Codex's discovery system; without Codex, the trait-tag patches still apply but no rich metadata surfaces.
+- **[vsimgui](https://mods.vintagestory.at/vsimgui)** — required transitively (Codex declares it; Forager doesn't directly).
+- **Recommended companion (not required):** [Biodiversity](https://mods.vintagestory.at/biodiversity) — Forager applies trait tags to its plants if loaded.
+
+---
 
 ## For modders writing knapping recipes that need hard substrate
 
@@ -33,6 +63,8 @@ Add to your knapping recipe JSON:
 
 That's it — Forager's handler is global, your recipe gets the gating for free. No code dependency on Forager required at compile time; just declare it as a load-order dependency in your `modinfo.json`.
 
+---
+
 ## Build
 
 ```powershell
@@ -40,12 +72,15 @@ $env:VINTAGE_STORY = "$env:APPDATA\Vintagestory"
 dotnet build
 ```
 
-Output goes to `bin/Debug/Mods/AlmanacForager.dll`. To deploy as a folder mod, copy `modinfo.json`, `AlmanacForager.dll`, and the `assets/` folder into `%APPDATA%\VintagestoryData\Mods\almanacforager\`.
+Output: `bin/Debug/Mods/AlmanacForager.dll`. Deploy as a folder mod by copying `modinfo.json`, `AlmanacForager.dll`, and the `assets/` folder to `%APPDATA%\VintagestoryData\Mods\almanacforager\`.
+
+---
 
 ## License
 
-- **Code:** MIT
-- **Assets:** CC-BY-NC-SA 4.0
+MIT. See [LICENSE](LICENSE).
+
+---
 
 ## Credits
 
