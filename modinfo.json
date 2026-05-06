@@ -2,7 +2,7 @@
   "type": "code",
   "modid": "almanacforager",
   "name": "The Almanac: Forager",
-  "authors": ["Lueken Good Design"],
+  "authors": ["Lueken"],
   "description": "Substrate-gated knapping shim, trait-tag system over vanilla flora, preparation/preservation blocks. Foundation mod for The Almanac line.",
   "version": "0.2.0",
   "side": "universal",

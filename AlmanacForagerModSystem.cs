@@ -7,7 +7,7 @@ using Vintagestory.API.Common;
 using Vintagestory.API.Server;
 
 [assembly: ModInfo("The Almanac: Forager", "almanacforager",
-    Authors = new string[] { "Lueken Good Design" },
+    Authors = new string[] { "Lueken" },
     Description = "Substrate-gated knapping shim, trait-tag system over vanilla flora, preparation/preservation blocks.",
     Version = "0.2.0")]
 
